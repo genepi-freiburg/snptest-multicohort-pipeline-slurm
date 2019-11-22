@@ -1,3 +1,9 @@
+.gitignore
+._01-prepare-sample.R
+._01-prepare-sample.sh
+._04-gwasqc.R
+._04-gwasqc.in.txt
+._04-run-gwasqc.sh
 ._02-snptest.sh
 ._03-formatting.sh
 ._TODO
