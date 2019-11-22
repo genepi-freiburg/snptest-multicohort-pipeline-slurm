@@ -1,4 +1,4 @@
-ADJS="unadjusted adjusted"
+# ADJS="unadjusted adjusted"
 OLD_DIR=`pwd`
 
 if [ "${SKIP_UNADJUSTED_ANALYSIS}" == "1" ]
@@ -15,7 +15,7 @@ do
 	cd ${DATA_DIR}/${PHEN}/${ADJ}/qc
 	rm -vf *.gwas *.html *.png *.csv *.txt
 	echo "Linking GWAS result data"
-	ln -s ../*.gwas . -v
+	ln -s ../*.gwas . -v 
 	ls -l *.gwas
 	
 	# prepare input file

@@ -32,7 +32,8 @@ if (acnl != actl) {
   quit(status=96)
 }
 
-if (nchar(add_covars > 0) | nchar(add_covar_types) > 0) {
+
+if (nchar(add_covars) > 0 | nchar(add_covar_types) > 0) {
   if (length(strsplit(add_covars, " ")) != length(strsplit(add_covar_types, " "))) {
     print("add_covar_types and add_covars must be of same length!")
     quit(status=99)
@@ -60,7 +61,7 @@ summary(cov_tab)
 prepare_sample <- function(fn) 
 {
   print(paste("prepare", fn))
-  my_fam = gsub("%COHORT%", fn, fam_path)
+  my_fam = gsub("%COHORT%", fn, fam_path) #%COHORT% wird durch fn ersetzt in fam_path
 
   print(paste("use fam", my_fam))
 
@@ -141,8 +142,12 @@ prepare_sample <- function(fn)
 
   outfn = paste(out_path, "/sample/", fn, ".sample", sep="")
 
+  
+  
   es = ""
   cs = ""
+#  es <- paste0("E",1:eigen_dim)
+#  cs <- paste(collapse=TRUE,rep("C",eigen_dim))
   for (i in 1:eigen_dim) {
     if (nchar(es) == 0) {
       es = paste("E", i, sep="")

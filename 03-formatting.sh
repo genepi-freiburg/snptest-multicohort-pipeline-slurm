@@ -5,6 +5,7 @@ sleep 600
 done
 }
 
+
 FORMATTING_LOG="${DATA_DIR}/../logs_formatting/formatting.log"
 rm -f ${FORMATTING_LOG}
 touch ${FORMATTING_LOG}
@@ -43,7 +44,7 @@ echo "Waiting for remaining jobs"
 job_ids=$(sed 's/afterok\://g' <<< $job_ids)
 echo $job_ids
 # srun --dependency=${job_ids} echo "Done"
-IFS=':' read -r -a job_ids_array <<< "$job_ids"
+IFS=':' read -r -a job_ids_array <<< "$job_ids" 
 for job_id in "${job_ids_array[@]}"
 do
 	srun --dependency="afterok:${job_id}" echo -n "."
@@ -77,6 +78,7 @@ do
 		job_ids_all="${job_ids_all}:${job_id}"
 	done
 	sbatch --output logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
+	sbatch --output logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
 done
 done
 done
@@ -139,10 +141,6 @@ do
 	srun --dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
-
-
-
-
 
 
 else

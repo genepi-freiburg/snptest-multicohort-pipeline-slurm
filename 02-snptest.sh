@@ -33,8 +33,10 @@ do
 for PHEN in ${PHENOTYPE_NAMES}
 do
 
-mkdir -p ${DATA_DIR}/${PHEN}/adjusted
-mkdir -p ${DATA_DIR}/${PHEN}/unadjusted
+for ADJ in ${ADJS}
+do
+mkdir -p ${DATA_DIR}/${PHEN}/${ADJ}
+done
 
 EIGEN=""
 EIGENS=`cat ${COVARIATE_FILE} | grep ${FN} | grep "^${PHEN}[ 	]" | cut -f 3 -d ' '`

@@ -1,16 +1,19 @@
 #!/bin/bash
 
+# überprüft, ob reguläre Datei existiert
 if [ ! -f "${1}" ]
 then
 	echo "Usage: ${0} param-file"
 	exit 9
 fi
 
+# directory setzen
 SCRIPT_DIR=${0%/*}
 
 # read params
 . ${1}
 
+# überprüfen, ob Experiment directory existiert
 if [ "${EXPERIMENT}" != "" ]
 then
 	if [ ! -d "${EXPERIMENT}" ]
@@ -20,13 +23,15 @@ then
 	fi
 fi
 
+
 if [ "${ADJS}" != "unadjusted" ] && [ "${ADJS}" != "adjusted" ] && [ "${ADJS}" != "unadjusted adjusted" ] && [ "${ADJS}" != "adjusted unadjusted" ]
 then
         echo "ADJS needs to be either unadjusted, or adjusted, or both"
         exit
 fi
 
-LOG_DIR=${DATA_DIR}/log
+# directory für log setzen 
+LOG_DIR=${DATA_DIR}/03_logs
 mkdir -p ${DATA_DIR}
 mkdir -p ${LOG_DIR}
 
