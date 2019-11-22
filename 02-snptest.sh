@@ -1,4 +1,9 @@
 #!/bin/bash
+function wait_till_short_squeue {
+while [ $(squeue | wc -l) -ge 5000 ]; do
+sleep 600
+done
+}
 
 if [ "${FREQUENTIST_MODEL}" == "" ]
 then
@@ -77,12 +82,15 @@ do
     if [ ${ADJ} == "adjusted" ]
     then
 
-	
+
+wait_till_short_squeue	
+
 echo "Analysis with Covariate Adjustment: ${COV}"
 echo "Using GEN file: ${GENFILE}"
 echo "Using SAMPLE file: ${DATA_DIR}/sample/${FN}.sample"
 	
 #-total_prob_limit 0 \
+
 
 # SNPtest AUTOSOMAL ADJUSTED
 job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \
@@ -109,6 +117,8 @@ fi
 if [ "${SKIP_UNADJUSTED_ANALYSIS}" != "1" ]
 then
 	echo "Unadjusted Analysis: ${FN} / ${PHEN}"
+
+wait_till_short_squeue
 
 # SNPtest AUTOSOMAL UNADJUSTED
 job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \
@@ -145,6 +155,8 @@ echo Processing ${FN} - ${PHEN} - Chromosome ${CHR}
 
 GENFILE=`echo ${GEN_PATH} | sed s/%CHR%/${CHR}/g | sed s/%COHORT%/${FN}/g`
 
+wait_till_short_squeue
+
 echo "Analysis with Covariate Adjustment: ${COV}"
 echo "Using GEN file: ${GENFILE}"
 echo "Using SAMPLE file: ${DATA_DIR}/sample/${FN}.sample"
@@ -171,6 +183,8 @@ job_ids="${job_ids}:${job_id}"
 if [ "${SKIP_UNADJUSTED_ANALYSIS}" != "1" ]
 then
 	echo "Unadjusted Analysis (ChrX)"
+
+wait_till_short_squeue
 
 	# SNPtest X chromosome UNADJUSTED
 job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \

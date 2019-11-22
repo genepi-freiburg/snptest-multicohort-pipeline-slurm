@@ -46,6 +46,10 @@ CONDITION_ON_SNP=""
 # three possible options: "unadjusted" or "adjusted" or "unadjusted adjusted"
 ADJS="unadjusted"
 
+# to avoid the standard AGE or SEX adjustments add the following:
+# NO_AGE_SEX_ADJUST="1"
+# NO_AGE_ADJUST ="1"
+
 # skip X chromosome (SNPtest crashes at the moment)
 SKIP_CHR_X="1"
 
@@ -66,10 +70,6 @@ INFO_TRANSLATION_TABLE="/data/studies/00_GCKD/00_data/01_genotypes/03_imputed_da
 
 # skip chromosome X (1)
 SKIP_CHR_X="1"
-
-# do adjusted analyses or unadjusted analyses or both
-# three possible options: "unadjusted" or "adjusted" or "unadjusted adjusted"
-ADJS="unadjusted"
 
 ##### COHORTS
 

@@ -1,4 +1,9 @@
 #!/bin/bash
+function wait_till_short_squeue {
+while [ $(squeue | wc -l) -ge 5000 ]; do
+sleep 600
+done
+}
 
 FORMATTING_LOG="${DATA_DIR}/../logs_formatting/formatting.log"
 rm -f ${FORMATTING_LOG}
@@ -21,6 +26,7 @@ do
 	then
 		echo "File exists: ${OUTFILE} - skip" | tee -a ${FORMATTING_LOG}
 	else
+		wait_till_short_squeue
 		job_id=$(sbatch ${EXCLUDE}--output logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/formatting.pl \
 			-i ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.out \
 			-c ${CHR} \
@@ -63,6 +69,7 @@ do
 	job_ids="afterok:121653"
 	for CHR in ${CHRS}
 	do
+		wait_till_short_squeue
 		job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas \
 			>>${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas")
 		job_id=$(echo $job_id | sed 's/Submitted batch job //')
@@ -104,6 +111,8 @@ for FN in ${COHORTS}
 do
 for ADJ in ${ADJS}
 do
+
+wait_till_short_squeue
 
 GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
@@ -156,6 +165,8 @@ for FN in ${COHORTS}
 do
 for ADJ in ${ADJS}
 do
+
+wait_till_short_squeue
 
 GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
