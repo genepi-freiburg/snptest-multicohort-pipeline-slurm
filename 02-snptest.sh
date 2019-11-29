@@ -105,7 +105,7 @@ job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type
         -lower_sample_limit 50 \
         -assume_chromosome ${CHR} \
         -cov_names ${COV} \
-        -log ${DATA_DIR}/log/snptest-${PHEN}-adjusted-${FN}-chr${CHR}.log \
+        -log ${DATA_DIR}/logs_snptest/snptest-${PHEN}-adjusted-${FN}-chr${CHR}.log \
 		${USE_RAW_PHENOTYPES} ${CONDITION_OPTION} >/dev/null")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
@@ -132,7 +132,7 @@ job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type
         -pheno ${PHEN} \
         -lower_sample_limit 50 \
         -assume_chromosome ${CHR} \
-        -log ${DATA_DIR}/log/snptest-${PHEN}-unadjusted-${FN}-chr${CHR}.log \
+        -log ${DATA_DIR}/logs_snptest/snptest-${PHEN}-unadjusted-${FN}-chr${CHR}.log \
 		${USE_RAW_PHENOTYPES} >/dev/null")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
@@ -176,7 +176,7 @@ job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type
         -cov_names ${COV} \
 		-sex_column SEX \
 		-assume_chromosome 0X \
-        -log ${DATA_DIR}/log/snptest-${PHEN}-adjusted-${FN}-chr${CHR}.log \
+        -log ${DATA_DIR}/logs_snptest/snptest-${PHEN}-adjusted-${FN}-chr${CHR}.log \
 		${USE_RAW_PHENOTYPES} ${CONDITION_OPTION} >/dev/null")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
@@ -199,7 +199,7 @@ job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type
         -hwe \
         -pheno ${PHEN} \
         -lower_sample_limit 50 \
-        -log ${DATA_DIR}/log/snptest-${PHEN}-unadjusted-${FN}-chr${CHR}.log \
+        -log ${DATA_DIR}/logs_snptest/snptest-${PHEN}-unadjusted-${FN}-chr${CHR}.log \
 		${USE_RAW_PHENOTYPES} >/dev/null")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"

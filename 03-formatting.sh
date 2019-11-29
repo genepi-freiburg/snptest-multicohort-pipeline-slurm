@@ -5,13 +5,12 @@ sleep 600
 done
 }
 
-
+mkdir -p ${DATA_DIR}/../logs_formatting
 FORMATTING_LOG="${DATA_DIR}/../logs_formatting/formatting.log"
 rm -f ${FORMATTING_LOG}
 touch ${FORMATTING_LOG}
 
 job_ids="afterok"
-mkdir -p logs_formatting
 
 for PHEN in ${PHENOTYPE_NAMES}
 do
@@ -28,7 +27,7 @@ do
 		echo "File exists: ${OUTFILE} - skip" | tee -a ${FORMATTING_LOG}
 	else
 		wait_till_short_squeue
-		job_id=$(sbatch ${EXCLUDE}--output logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/formatting.pl \
+		job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/formatting.pl \
 			-i ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.out \
 			-c ${CHR} \
 			-o ${OUTFILE}")
@@ -71,14 +70,16 @@ do
 	for CHR in ${CHRS}
 	do
 		wait_till_short_squeue
-		job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas \
+		job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas \
 			>>${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas")
 		job_id=$(echo $job_id | sed 's/Submitted batch job //')
 		job_ids="${job_ids}:${job_id}"
 		job_ids_all="${job_ids_all}:${job_id}"
 	done
-	sbatch --output logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
-	sbatch --output logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
+#	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
+#	ls GCKD_COMMON_CLEAN-chr*.gwas
+#	ls GCKD_COMMON_CLEAN-chr*.out
+#	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
 done
 done
 done
@@ -120,7 +121,7 @@ GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
 
 mv "${GWAS_FN}" "${GWAS_FN}.orig"	
-job_id=$(sbatch ${EXCLUDE}--output logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="/data/programs/scripts/utils/update-gwas-by-map.pl \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="/data/programs/scripts/utils/update-gwas-by-map.pl \
 	-g '${GWAS_FN}.orig' \
 	-m '${SNP_TRANSLATION_TABLE}' \
 	-o '${GWAS_FN}' \
@@ -170,14 +171,14 @@ GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
 
 mv "${GWAS_FN}" "${GWAS_FN}.orig1"
-job_id=$(sbatch ${EXCLUDE}--output logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/update-gwas-by-Rsq.pl \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/update-gwas-by-Rsq.pl \
         -g '${GWAS_FN}.orig1' \
         -m '${INFO_TRANSLATION_TABLE}' \
         -o '${GWAS_FN}'")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
 
-sbatch --output logs_formatting/slurm-delete-interim-%A.txt --dependency=afterok:${job_id} --wrap="rm ${GWAS_FN}.orig1"
+#sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=afterok:${job_id} --wrap="rm ${GWAS_FN}.orig1"
 #rm ${GWAS_FN}.orig1
 done
 done
