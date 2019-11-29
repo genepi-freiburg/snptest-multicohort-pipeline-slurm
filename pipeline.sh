@@ -31,7 +31,7 @@ then
 fi
 
 # directory für log setzen 
-LOG_DIR=${DATA_DIR}/03_logs
+LOG_DIR=${DATA_DIR}/../03_logs
 mkdir -p ${DATA_DIR}
 mkdir -p ${LOG_DIR}
 mkdir -p ${DATA_DIR}/log

@@ -76,10 +76,10 @@ do
 		job_ids="${job_ids}:${job_id}"
 		job_ids_all="${job_ids_all}:${job_id}"
 	done
-#	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
+	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
 #	ls GCKD_COMMON_CLEAN-chr*.gwas
 #	ls GCKD_COMMON_CLEAN-chr*.out
-#	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
+	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
 done
 done
 done
@@ -178,7 +178,7 @@ job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatti
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
 
-#sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=afterok:${job_id} --wrap="rm ${GWAS_FN}.orig1"
+sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=afterok:${job_id} --wrap="rm ${GWAS_FN}.orig1"
 #rm ${GWAS_FN}.orig1
 done
 done
