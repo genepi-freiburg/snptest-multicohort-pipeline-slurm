@@ -11,3 +11,6 @@
 ._params-template
 ._pipeline.sh
 ._update-gwas-by-Rsq.pl
+._pipeline_*
+pipeline_jan_2020.sh
+pipeline_loop_all.sh
