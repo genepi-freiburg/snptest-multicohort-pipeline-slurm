@@ -1,0 +1,29 @@
+SNPTEST implementation of recessive models with continuous phenotypes and imputed genotype data
+
+command:
+snptest_v2.5.2 \
+
+        -data test.sample \
+
+        -o test_chr1.out \
+
+        -frequentist 3 \
+
+        -method expected \
+
+        -hwe \
+
+        -pheno testphen \
+
+        -lower_sample_limit 50 \
+
+        -assume_chromosome 1 \
+
+        -log test.log \
+
+        -use_raw_phenotypes >/dev/null
+
+
+
+SNPTEST implements a linear regression lm(x~y) where x is the phenotype and y is the recessive dosage, i.e. the imputd probability for the homozygous genotype.
+The p-value is a result of a t-test for testing whether beta is 0 or not.

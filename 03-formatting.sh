@@ -40,13 +40,13 @@ done
 done
 
 echo "Waiting for remaining jobs"
+# srun --dependency=${job_ids} echo "Done"
 job_ids=$(sed 's/afterok\://g' <<< $job_ids)
 echo $job_ids
-# srun --dependency=${job_ids} echo "Done"
 IFS=':' read -r -a job_ids_array <<< "$job_ids" 
 for job_id in "${job_ids_array[@]}"
 do
-	srun --dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
@@ -92,7 +92,7 @@ echo $job_ids_all
 IFS=':' read -r -a job_ids_array <<< "$job_ids_all"
 for job_id in "${job_ids_array[@]}"
 do
-	srun --dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
@@ -139,7 +139,7 @@ echo $job_ids
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 for job_id in "${job_ids_array[@]}"
 do
-	srun --dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
@@ -191,7 +191,7 @@ echo $job_ids
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 for job_id in "${job_ids_array[@]}"
 do
-	srun --dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
