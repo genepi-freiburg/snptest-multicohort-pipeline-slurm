@@ -66,7 +66,10 @@ do
 	FIRST_FILE=`ls ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas | head -n 1`
 	echo "First file (for header) is: $FIRST_FILE"
 	head -n 1 ${FIRST_FILE} >${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas
-	job_ids="afterok:121653"
+ 
+    job_ids=$(sbatch --wrap="sleep 1")
+    job_ids=$(echo $job_ids | sed 's/Submitted batch job //')
+	job_ids="afterok:${job_ids}"
 	for CHR in ${CHRS}
 	do
 		wait_till_short_squeue
