@@ -4,6 +4,8 @@
 # script_dir=/data/programs/pipelines/snptest-multicohort-pipeline-slurm/pipeline.sh
 # echo $1
 
+date
+
 # überprüft, ob reguläre Datei existiert
 if [ ! -f "${1}" ]
 then
@@ -41,6 +43,8 @@ LOG_DIR=${DATA_DIR}/../03_logs
 mkdir -p ${DATA_DIR}
 mkdir -p ${LOG_DIR}
 mkdir -p ${DATA_DIR}/log
+mkdir -p ${LOG_DIR}/logs_formatting
+mkdir -p ${LOG_DIR}/logs_snptest
 
 # determine chromosomes
 if [ "${SKIP_CHR_X}" == "0" ]
@@ -152,5 +156,5 @@ fi
 fi
 
 
-
+date
 

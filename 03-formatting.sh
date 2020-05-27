@@ -6,7 +6,7 @@ done
 }
 
 mkdir -p ${DATA_DIR}/../logs_formatting
-FORMATTING_LOG="${DATA_DIR}/../logs_formatting/formatting.log"
+FORMATTING_LOG="${LOG_DIR}/formatting.log"
 rm -f ${FORMATTING_LOG}
 touch ${FORMATTING_LOG}
 
@@ -27,7 +27,7 @@ do
 		echo "File exists: ${OUTFILE} - skip" | tee -a ${FORMATTING_LOG}
 	else
 		wait_till_short_squeue
-		job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/formatting.pl \
+		job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-chr${CHR}-%A.txt --mail-type=FAIL --mem=8G --wrap="${SCRIPT_DIR}/formatting.pl \
 			-i ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.out \
 			-c ${CHR} \
 			-o ${OUTFILE}")
@@ -46,7 +46,7 @@ echo $job_ids
 IFS=':' read -r -a job_ids_array <<< "$job_ids" 
 for job_id in "${job_ids_array[@]}"
 do
-	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--mem=1G --dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
@@ -67,22 +67,22 @@ do
 	echo "First file (for header) is: $FIRST_FILE"
 	head -n 1 ${FIRST_FILE} >${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas
  
-    job_ids=$(sbatch --wrap="sleep 1")
+    job_ids=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-initializing-wait-%A.txt --mem=1G --wrap="sleep 1")
     job_ids=$(echo $job_ids | sed 's/Submitted batch job //')
 	job_ids="afterok:${job_ids}"
 	for CHR in ${CHRS}
 	do
 		wait_till_short_squeue
-		job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas \
+		job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-%A.txt --mail-type=FAIL --mem=8G --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas \
 			>>${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas")
 		job_id=$(echo $job_id | sed 's/Submitted batch job //')
 		job_ids="${job_ids}:${job_id}"
 		job_ids_all="${job_ids_all}:${job_id}"
 	done
-	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
+	sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-gwas-%A.txt --dependency=${job_ids} --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas"
 #	ls GCKD_COMMON_CLEAN-chr*.gwas
 #	ls GCKD_COMMON_CLEAN-chr*.out
-	sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=${job_ids} --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
+	sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-out-%A.txt --dependency=${job_ids} --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out"
 done
 done
 done
@@ -95,7 +95,7 @@ echo $job_ids_all
 IFS=':' read -r -a job_ids_array <<< "$job_ids_all"
 for job_id in "${job_ids_array[@]}"
 do
-	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--mem=1G --dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
@@ -124,7 +124,7 @@ GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
 
 mv "${GWAS_FN}" "${GWAS_FN}.orig"	
-job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="/data/programs/scripts/utils/update-gwas-by-map.pl \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-update-map-%A.txt --mail-type=FAIL --mem=8G --wrap="/data/programs/scripts/utils/update-gwas-by-map.pl \
 	-g '${GWAS_FN}.orig' \
 	-m '${SNP_TRANSLATION_TABLE}' \
 	-o '${GWAS_FN}' \
@@ -142,7 +142,7 @@ echo $job_ids
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 for job_id in "${job_ids_array[@]}"
 do
-	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--mem=1G --dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 
@@ -174,14 +174,14 @@ GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
 
 mv "${GWAS_FN}" "${GWAS_FN}.orig1"
-job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/../logs_formatting/slurm-formatting-%A.txt --mail-type=FAIL --wrap="${SCRIPT_DIR}/update-gwas-by-Rsq.pl \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-update-Rsq-%A.txt --mail-type=FAIL --mem=8G --wrap="${SCRIPT_DIR}/update-gwas-by-Rsq.pl \
         -g '${GWAS_FN}.orig1' \
         -m '${INFO_TRANSLATION_TABLE}' \
         -o '${GWAS_FN}'")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
 
-sbatch --output ${DATA_DIR}/../logs_formatting/slurm-delete-interim-%A.txt --dependency=afterok:${job_id} --wrap="rm ${GWAS_FN}.orig1"
+sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig1-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig1"
 #rm ${GWAS_FN}.orig1
 done
 done
@@ -194,7 +194,7 @@ echo $job_ids
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 for job_id in "${job_ids_array[@]}"
 do
-	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--mem=1G --dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
 

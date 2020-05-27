@@ -95,7 +95,7 @@ echo "Using SAMPLE file: ${DATA_DIR}/sample/${FN}.sample"
 
 
 # SNPtest AUTOSOMAL ADJUSTED
-job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/adjusted/slurm-snptest-%A.txt --mail-type=FAIL --mem=8G --wrap="${SNPTEST} \
         -data ${GENFILE} ${DATA_DIR}/sample/${FN}.sample \
         -o ${DATA_DIR}/${PHEN}/adjusted/${FN}-chr${CHR}.out \
         -frequentist ${FREQUENTIST_MODEL} \
@@ -123,7 +123,7 @@ then
 wait_till_short_squeue
 
 # SNPtest AUTOSOMAL UNADJUSTED
-job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/unadjusted/slurm-snptest-%A.txt --mail-type=FAIL --mem=8G --wrap="${SNPTEST} \
         -data ${GENFILE} ${DATA_DIR}/sample/${FN}.sample \
         -o ${DATA_DIR}/${PHEN}/unadjusted/${FN}-chr${CHR}.out \
         -frequentist ${FREQUENTIST_MODEL} \
@@ -164,7 +164,7 @@ echo "Using GEN file: ${GENFILE}"
 echo "Using SAMPLE file: ${DATA_DIR}/sample/${FN}.sample"
 
 # SNPtest X chromosome ADJUSTED
-job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/adjusted/slurm-snptest-%A.txt --mail-type=FAIL --mem=8G --wrap="${SNPTEST} \
         -data ${GENFILE} ${DATA_DIR}/sample/${FN}.sample \
         -o ${DATA_DIR}/${PHEN}/adjusted/${FN}-chr${CHR}.out \
         -frequentist ${FREQUENTIST_MODEL} \
@@ -189,7 +189,7 @@ then
 wait_till_short_squeue
 
 	# SNPtest X chromosome UNADJUSTED
-job_id=$(sbatch ${EXCLUDE}--output logs_snptest/slurm-snptest-%A.txt --mail-type=FAIL --wrap="${SNPTEST} \
+job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/unadjusted/slurm-snptest-%A.txt --mail-type=FAIL --mem=8G --wrap="${SNPTEST} \
         -data ${GENFILE} ${DATA_DIR}/sample/${FN}.sample \
         -o ${DATA_DIR}/${PHEN}/unadjusted/${FN}-chr${CHR}.out \
         -frequentist ${FREQUENTIST_MODEL} \
@@ -224,6 +224,6 @@ echo $job_ids
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 for job_id in "${job_ids_array[@]}"
 do
-	srun ${EXCLUDE}--dependency="afterok:${job_id}" echo -n "."
+	srun ${EXCLUDE}--mem=1G --dependency="afterok:${job_id}" echo -n "."
 # 	srun --dependency="afterok:${job_id}" echo "Job ${job_id} was ok."
 done
