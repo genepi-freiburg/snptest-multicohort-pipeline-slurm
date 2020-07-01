@@ -97,4 +97,5 @@ FREQUENTIST_MODEL="1"
 # uses standard partition
 # exclude specific servers for the main jobs
 #EXCLUDE="--exclude=imbi[6-7],imbi9 "
+#EXCLUDE="-p biom --nodelist=imbi3"
 EXCLUDE=""
