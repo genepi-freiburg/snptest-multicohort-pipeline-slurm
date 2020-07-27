@@ -88,6 +88,8 @@ GEN_PATH="/data/studies/00_GCKD/00_data/01_genotypes/03_imputed_data/02_HRC/Oxfo
 FAM_PATH="/data/studies/00_GCKD/00_data/01_genotypes/02_clean_data/%COHORT%.fam"
 
 ##### TECHNICAL
+# FORMAT_ONLY_NO_SNPTEST="1"
+# GWASQC="1"
 
 # Model to calculate (SNPtest frequentist parameter)
 # 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
@@ -96,6 +98,7 @@ FREQUENTIST_MODEL="1"
 ### SLURM parameters
 # uses standard partition
 # exclude specific servers for the main jobs
+#EXCLUDE="-p biom --exclude=imbi3 "
 #EXCLUDE="--exclude=imbi[6-7],imbi9 "
 #EXCLUDE="-p biom --nodelist=imbi3"
 EXCLUDE=""

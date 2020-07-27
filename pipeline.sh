@@ -110,8 +110,10 @@ fi
 . ${SCRIPT_DIR}/03-formatting.sh
 
 # gwasqc
+if [ "${GWASQC}" != "0" ]
+then
 . ${SCRIPT_DIR}/04-run-gwasqc.sh
-
+fi
 
 
 i=$[$j+1]
@@ -149,8 +151,10 @@ fi
 . ${SCRIPT_DIR}/03-formatting.sh
 
 # gwasqc
+if [ "${GWASQC}" != "0" ]
+then
 . ${SCRIPT_DIR}/04-run-gwasqc.sh
-
+fi
 
 
 fi
