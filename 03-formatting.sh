@@ -70,17 +70,19 @@ for ADJ in ${ADJS}
 do
 
 echo "Combine ${FN} ${ADJ} ${PHEN}" | tee -a ${FORMATTING_LOG}
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb"
+
 
 FIRST_FILE=`ls ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas | head -n 1`
 echo "First file (for header) is: $FIRST_FILE"
-head -n 1 ${FIRST_FILE} > ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas
-chmod g-s "${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+head -n 1 ${FIRST_FILE} > ${GWAS_FN}
+chmod g-s "${GWAS_FN}"
 
 job_ids=$init_wait_id
 for CHR in ${CHRS}
 do
 wait_till_short_squeue
-job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-combine-%A.txt --mail-type=FAIL --mem=8G -c 2 --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas >> ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas")
+job_id=$(sbatch --dependency=${job_ids} ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-combine-%A.txt --mail-type=FAIL --mem=8G -c 2 --wrap="sed -e '1d' ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr${CHR}.gwas >> ${GWAS_FN}")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
 job_ids_all="${job_ids_all}:${job_id}"
@@ -132,18 +134,6 @@ echo "Add RSID alias column, translate using ${SNP_TRANSLATION_TABLE}" >>${FORMA
 echo "Add RSID alias column, translate using ${SNP_TRANSLATION_TABLE}"
 
 job_ids=$init_wait_id
-for PHEN in ${PHENOTYPE_NAMES}
-do
-for FN in ${COHORTS}
-do
-for ADJ in ${ADJS}
-do
-GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
-mv "${GWAS_FN}" "${GWAS_FN}.orig"
-done
-done
-done
-echo "Move done (.orig)"
 
 for PHEN in ${PHENOTYPE_NAMES}
 do
@@ -154,14 +144,15 @@ do
 
 wait_till_short_squeue
 
-GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+# GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb"
 echo "Working with: ${GWAS_FN}"
 
 # chmod g-s "${GWAS_FN}.orig"
 job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-update-map-%A.txt --mail-type=FAIL --mem=8G -c 2 --wrap="/data/programs/scripts/utils/update-gwas-by-map.pl \
-	-g '${GWAS_FN}.orig' \
+	-g '${GWAS_FN}' \
 	-m '${SNP_TRANSLATION_TABLE}' \
-	-o '${GWAS_FN}' \
+	-o '${GWAS_FN}.trans' \
 	-s ")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
@@ -195,6 +186,20 @@ else
 echo "No RSID translation" >>${FORMATTING_LOG}
 echo "No RSID translation"
 
+for PHEN in ${PHENOTYPE_NAMES}
+do
+for FN in ${COHORTS}
+do
+for ADJ in ${ADJS}
+do
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb"
+mv "${GWAS_FN}" "${GWAS_FN}.trans"
+done
+done
+done
+echo "Move done (.trans)"
+
+
 fi
 
 if [ "${INFO_TRANSLATION_TABLE}" != "" ]
@@ -205,18 +210,18 @@ echo "Replace SNPtest info with Rsq for imputation quality, using ${INFO_TRANSLA
 
 job_ids=$init_wait_id
 
-for PHEN in ${PHENOTYPE_NAMES}
-do
-for FN in ${COHORTS}
-do
-for ADJ in ${ADJS}
-do
-GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
-mv "${GWAS_FN}" "${GWAS_FN}.orig1"
-done
-done
-done
-echo "Move done (.orig1)"
+# for PHEN in ${PHENOTYPE_NAMES}
+# do
+# for FN in ${COHORTS}
+# do
+# for ADJ in ${ADJS}
+# do
+# GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+# mv "${GWAS_FN}" "${GWAS_FN}.orig1"
+# done
+# done
+# done
+# echo "Move done (.orig1)"
 
 for PHEN in ${PHENOTYPE_NAMES}
 do
@@ -227,19 +232,21 @@ do
 
 wait_till_short_squeue
 
-GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb.trans"
 echo "Working with: ${GWAS_FN}"
 
 # chmod g-s "${GWAS_FN}.orig1"
 job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-update-Rsq-%A.txt --mail-type=FAIL --mem=8G -c 2 --wrap="${SCRIPT_DIR}/update-gwas-by-Rsq.pl \
-        -g '${GWAS_FN}.orig1' \
+        -g '${GWAS_FN}' \
         -m '${INFO_TRANSLATION_TABLE}' \
-        -o '${GWAS_FN}'")
+        -o '${GWAS_FN}.imp'")
 job_id=$(echo $job_id | sed 's/Submitted batch job //')
 job_ids="${job_ids}:${job_id}"
 
-job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig1-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig1")
-job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig")
+#job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig1-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig1")
+#job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig")
+#job_id_4=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-comb-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb")
+#job_id_5=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-trans-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}")
 done
 done
 done
@@ -270,7 +277,35 @@ else
 echo "No Rsq replacement" >>${FORMATTING_LOG}
 echo "No Rsq replacement"
 
+for PHEN in ${PHENOTYPE_NAMES}
+do
+for FN in ${COHORTS}
+do
+for ADJ in ${ADJS}
+do
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb.trans"
+mv "${GWAS_FN}" "${GWAS_FN}.imp"
+done
+done
+done
+echo "Move done (.imp)"
+
 fi
+
+
+
+for PHEN in ${PHENOTYPE_NAMES}
+do
+for FN in ${COHORTS}
+do
+for ADJ in ${ADJS}
+do
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+cp "${GWAS_FN}.comb.trans.imp" "${GWAS_FN}"
+done
+done
+done
+echo "Copy done"
 
 
 echo "Done" | tee -a ${FORMATTING_LOG}
