@@ -138,15 +138,26 @@ for FN in ${COHORTS}
 do
 for ADJ in ${ADJS}
 do
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+mv "${GWAS_FN}" "${GWAS_FN}.orig"
+done
+done
+done
+echo "Move done (.orig)"
+
+for PHEN in ${PHENOTYPE_NAMES}
+do
+for FN in ${COHORTS}
+do
+for ADJ in ${ADJS}
+do
 
 wait_till_short_squeue
 
 GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
 
-chmod g-s "${GWAS_FN}"
-mv "${GWAS_FN}" "${GWAS_FN}.orig"
-chmod g-s "${GWAS_FN}.orig"
+# chmod g-s "${GWAS_FN}.orig"
 job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-update-map-%A.txt --mail-type=FAIL --mem=8G -c 2 --wrap="/data/programs/scripts/utils/update-gwas-by-map.pl \
 	-g '${GWAS_FN}.orig' \
 	-m '${SNP_TRANSLATION_TABLE}' \
@@ -200,15 +211,26 @@ for FN in ${COHORTS}
 do
 for ADJ in ${ADJS}
 do
+GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
+mv "${GWAS_FN}" "${GWAS_FN}.orig1"
+done
+done
+done
+echo "Move done (.orig1)"
+
+for PHEN in ${PHENOTYPE_NAMES}
+do
+for FN in ${COHORTS}
+do
+for ADJ in ${ADJS}
+do
 
 wait_till_short_squeue
 
 GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
 echo "Working with: ${GWAS_FN}"
 
-chmod g-s "${GWAS_FN}"
-mv "${GWAS_FN}" "${GWAS_FN}.orig1"
-chmod g-s "${GWAS_FN}.orig1"
+# chmod g-s "${GWAS_FN}.orig1"
 job_id=$(sbatch ${EXCLUDE}--output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-formatting-update-Rsq-%A.txt --mail-type=FAIL --mem=8G -c 2 --wrap="${SCRIPT_DIR}/update-gwas-by-Rsq.pl \
         -g '${GWAS_FN}.orig1' \
         -m '${INFO_TRANSLATION_TABLE}' \
