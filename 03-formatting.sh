@@ -301,7 +301,7 @@ do
 for ADJ in ${ADJS}
 do
 GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas"
-cp "${GWAS_FN}.comb.trans.imp" "${GWAS_FN}"
+mv "${GWAS_FN}.comb.trans.imp" "${GWAS_FN}"
 done
 done
 done

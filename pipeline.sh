@@ -66,14 +66,14 @@ echo "Chromosome List: ${CHRS}"
 count=$(echo ${PHENOTYPE_TYPES} | wc -c)
 count=$(expr $count / 2)
 
+PHENOTYPE_TYPES_ALL=$PHENOTYPE_TYPES
+PHENOTYPE_NAMES_ALL=$PHENOTYPE_NAMES
+
 # if too many traits loop
 # echo ${PHENOTYPE_NAMES} | wc -c
 if [ "$count" -ge "1001" ]
 then
 echo "More than 1000 phenotypes: looping (${count} phenotypes)"
-
-PHENOTYPE_TYPES_ALL=$PHENOTYPE_TYPES
-PHENOTYPE_NAMES_ALL=$PHENOTYPE_NAMES
 
 i=1
 while [ $i -lt $count ]
@@ -84,7 +84,6 @@ if [ "$j" -gt "$count" ]
 then
 	j=$count
 fi
-
 
 echo "Processing phenotype ${i} until ${j}"
 PHENOTYPE_TYPES=$(echo $PHENOTYPE_TYPES_ALL| cut -d " " -f${i}-${j})
@@ -122,8 +121,6 @@ done
 PHENOTYPE_TYPES=$PHENOTYPE_TYPES_ALL
 PHENOTYPE_NAMES=$PHENOTYPE_NAMES_ALL
 
-
-
 else
 echo "Less than 1000 phenotypes: No looping (${count} phenotypes)"
 
@@ -156,9 +153,7 @@ then
 . ${SCRIPT_DIR}/04-run-gwasqc.sh
 fi
 
-
 fi
 
 
 date
-
