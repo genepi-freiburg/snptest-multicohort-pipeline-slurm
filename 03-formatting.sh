@@ -48,12 +48,12 @@ echo "Waiting for remaining jobs"
 job_ids=$(sed 's/afterok\://g' <<< $job_ids)
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 len=${#job_ids_array[@]}
-for(( i=0; i<$len; i=i+1000 ))
+for(( ii=0; ii<$len; ii=ii+1000 ))
 do
 tempID=$init_wait_id
-for((j=i;j<$len&j<i+1000;j++))
+for((jj=ii;jj<$len&jj<ii+1000;jj++))
 do
-tempID="${tempID}:${job_ids_array[$j]}"
+tempID="${tempID}:${job_ids_array[$jj]}"
 done
 echo $tempID
 srun ${EXCLUDE}--mem=1G --dependency=${tempID} echo "Done"
@@ -97,12 +97,12 @@ waitID=$init_wait_id
 job_ids_all=$(sed 's/afterok\://g' <<< $job_ids_all)
 IFS=':' read -r -a job_ids_array <<< "$job_ids_all"
 len=${#job_ids_array[@]}
-for(( i=0; i<$len; i=i+1000 ))
+for(( ii=0; ii<$len; ii=ii+1000 ))
 do
 tempID=$init_wait_id
-for((j=i;j<$len&j<i+1000;j++))
+for((jj=ii;jj<$len&jj<ii+1000;jj++))
 do
-tempID="${tempID}:${job_ids_array[$j]}"
+tempID="${tempID}:${job_ids_array[$jj]}"
 done
 echo $tempID
 job_id=$(sbatch ${EXCLUDE}--mem=1G --output ${LOG_DIR}/slurm-formatting-wait-%A.txt --dependency=${tempID} --wrap="sleep 0")
@@ -166,12 +166,12 @@ waitID=$init_wait_id
 job_ids=$(sed 's/afterok\://g' <<< $job_ids)
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 len=${#job_ids_array[@]}
-for(( i=0; i<$len; i=i+1000 ))
+for(( ii=0; ii<$len; ii=ii+1000 ))
 do
 tempID=$init_wait_id
-for((j=i;j<$len&j<i+1000;j++))
+for((jj=ii;jj<$len&jj<ii+1000;jj++))
 do
-tempID="${tempID}:${job_ids_array[$j]}"
+tempID="${tempID}:${job_ids_array[$jj]}"
 done
 echo $tempID
 job_id=$(sbatch ${EXCLUDE}--mem=1G --output ${LOG_DIR}/slurm-formatting-wait-%A.txt --dependency=${tempID} --wrap="sleep 0")
@@ -257,12 +257,12 @@ waitID=$init_wait_id
 job_ids=$(sed 's/afterok\://g' <<< $job_ids)
 IFS=':' read -r -a job_ids_array <<< "$job_ids"
 len=${#job_ids_array[@]}
-for(( i=0; i<$len; i=i+1000 ))
+for(( ii=0; ii<$len; ii=ii+1000 ))
 do
 tempID=$init_wait_id
-for((j=i;j<$len&j<i+1000;j++))
+for((jj=ii;jj<$len&jj<ii+1000;jj++))
 do
-tempID="${tempID}:${job_ids_array[$j]}"
+tempID="${tempID}:${job_ids_array[$jj]}"
 done
 echo $tempID
 job_id=$(sbatch ${EXCLUDE}--mem=1G --output ${LOG_DIR}/slurm-formatting-wait-%A.txt --dependency=${tempID} --wrap="echo 'Done'")

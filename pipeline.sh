@@ -75,19 +75,19 @@ if [ "$count" -ge "1001" ]
 then
 echo "More than 1000 phenotypes: looping (${count} phenotypes)"
 
-i=1
-while [ $i -lt $count ]
+index_phenotypes_lower=1
+while [ $index_phenotypes_lower -lt $count ]
 do
-j=$[$i+999]
-# stop at j=count
-if [ "$j" -gt "$count" ]
+index_phenotypes_upper=$[$index_phenotypes_lower+999]
+# stop at index_phenotypes_upper=count
+if [ "$index_phenotypes_upper" -gt "$count" ]
 then
-	j=$count
+	index_phenotypes_upper=$count
 fi
 
-echo "Processing phenotype ${i} until ${j}"
-PHENOTYPE_TYPES=$(echo $PHENOTYPE_TYPES_ALL| cut -d " " -f${i}-${j})
-PHENOTYPE_NAMES=$(echo $PHENOTYPE_NAMES_ALL| cut -d " " -f${i}-${j})
+echo "Processing phenotype ${index_phenotypes_lower} until ${index_phenotypes_upper}"
+PHENOTYPE_TYPES=$(echo $PHENOTYPE_TYPES_ALL| cut -d " " -f${index_phenotypes_lower}-${index_phenotypes_upper})
+PHENOTYPE_NAMES=$(echo $PHENOTYPE_NAMES_ALL| cut -d " " -f${index_phenotypes_lower}-${index_phenotypes_upper})
 
 # prepare sample file
 . ${SCRIPT_DIR}/01-prepare-sample.sh
@@ -115,7 +115,7 @@ then
 fi
 
 
-i=$[$j+1]
+index_phenotypes_lower=$[$index_phenotypes_upper+1]
 done
 
 PHENOTYPE_TYPES=$PHENOTYPE_TYPES_ALL

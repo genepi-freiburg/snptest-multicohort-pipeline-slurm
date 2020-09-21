@@ -130,8 +130,8 @@ prepare_sample <- function(fn)
     }
   }
   print(paste("eigen_dim", eigen_dim))
-  for (i in 1:eigen_dim) {
-    pc = paste("E",i,sep="")
+  for (index_i in 1:eigen_dim) {
+    pc = paste("E",index_i,sep="")
     result[,pc]=samp[,pc]
   }
   head(result)
@@ -148,12 +148,12 @@ prepare_sample <- function(fn)
   cs = ""
 #  es <- paste0("E",1:eigen_dim)
 #  cs <- paste(collapse=TRUE,rep("C",eigen_dim))
-  for (i in 1:eigen_dim) {
+  for (index_i in 1:eigen_dim) {
     if (nchar(es) == 0) {
-      es = paste("E", i, sep="")
+      es = paste("E", index_i, sep="")
       cs = "C"
     } else {
-      es = paste(es, " E", i, sep="")
+      es = paste(es, " E", index_i, sep="")
       cs = paste(cs, "C")
     }
   }
@@ -192,10 +192,10 @@ print(paste("fns", fns))
 
 # check covars file
 if (nrow(cov_tab)>0) {
-for (i in 1:nrow(cov_tab)) {
-	pheno = cov_tab[i, "PHENO"]
-	fn = cov_tab[i, "FILE"]
-	cov = cov_tab[i, "COV"]
+for (index_i in 1:nrow(cov_tab)) {
+	pheno = cov_tab[index_i, "PHENO"]
+	fn = cov_tab[index_i, "FILE"]
+	cov = cov_tab[index_i, "COV"]
         if (!(pheno %in% colnames(data))) {
                 print(paste("phenotype name", pheno, "from covar file not found in data"))
 		quit(status=92)

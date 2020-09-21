@@ -112,9 +112,8 @@ job_ids="${job_ids}:${job_id}"
 
 fi
 
-    if [ "${ADJ}" == "unadjusted" ]
-    then
-
+if [ "${ADJ}" == "unadjusted" ]
+then
 
 if [ "${SKIP_UNADJUSTED_ANALYSIS}" != "1" ]
 then
@@ -140,8 +139,7 @@ job_ids="${job_ids}:${job_id}"
 else
 	echo "Skip unadjusted analysis"
 fi
-
-    fi
+fi
 done
 
 
