@@ -245,8 +245,8 @@ job_ids="${job_ids}:${job_id}"
 
 #job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig1-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig1")
 #job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig")
-#job_id_4=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-comb-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb")
-#job_id_5=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-trans-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}")
+job_id_4=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-comb-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb")
+job_id_5=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-trans-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}")
 done
 done
 done
@@ -305,7 +305,7 @@ mv "${GWAS_FN}.comb.trans.imp" "${GWAS_FN}"
 done
 done
 done
-echo "Copy done"
+echo "Move done"
 
 
 echo "Done" | tee -a ${FORMATTING_LOG}
