@@ -293,7 +293,6 @@ done
 echo "Move done (.imp)"
 
 echo "Now deleting"
-job_ids=$init_wait_id
 for PHEN in ${PHENOTYPE_NAMES}
 do
 for FN in ${COHORTS}
@@ -306,34 +305,9 @@ job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-gwas-
 job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-out-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out")
 job_id_4=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-comb-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb")
 job_id_5=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-trans-%A.txt --mem=1G --wrap="rm ${GWAS_FN}")
-job_id=$(echo $job_id_4 | sed 's/Submitted batch job //')
-job_ids="${job_ids}:${job_id}"
-job_id=$(echo $job_id_5 | sed 's/Submitted batch job //')
-job_ids="${job_ids}:${job_id}"
 done
 done
 done
-
-echo "Waiting for remaining jobs"
-waitID=$init_wait_id
-# srun --dependency=${job_ids} echo "Done"
-job_ids=$(sed 's/afterok\://g' <<< $job_ids)
-IFS=':' read -r -a job_ids_array <<< "$job_ids"
-len=${#job_ids_array[@]}
-for(( ii=0; ii<$len; ii=ii+1000 ))
-do
-tempID=$init_wait_id
-for((jj=ii;jj<$len&jj<ii+1000;jj++))
-do
-tempID="${tempID}:${job_ids_array[$jj]}"
-done
-echo $tempID
-job_id=$(sbatch ${EXCLUDE}--mem=1G --output ${LOG_DIR}/slurm-formatting-wait-%A.txt --dependency=${tempID} --wrap="echo 'Done'")
-job_id=$(echo $job_id | sed 's/Submitted batch job //')
-waitID="${waitID}:${job_id}"
-done
-echo $waitID
-srun --dependency=${waitID} echo "Roadblock done"
 
 fi
 
