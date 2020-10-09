@@ -112,18 +112,18 @@ done
 echo $waitID
 srun --dependency=${waitID} echo "Roadblock done"
 
-for PHEN in ${PHENOTYPE_NAMES}
-do
-for FN in ${COHORTS}
-do
-for ADJ in ${ADJS}
-do
-job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-gwas-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas")
-job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-out-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out")
-sleep 0
-done
-done
-done
+# for PHEN in ${PHENOTYPE_NAMES}
+# do
+# for FN in ${COHORTS}
+# do
+# for ADJ in ${ADJS}
+# do
+# job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-gwas-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas")
+# job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-out-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out")
+# sleep 0
+# done
+# done
+# done
 
 
 
@@ -245,6 +245,8 @@ job_ids="${job_ids}:${job_id}"
 
 #job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig1-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig1")
 #job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-orig-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}.orig")
+job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-gwas-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas")
+job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-out-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out")
 job_id_4=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-comb-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb")
 job_id_5=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-trans-%A.txt --dependency=afterok:${job_id} --mem=1G --wrap="rm ${GWAS_FN}")
 done
@@ -300,6 +302,8 @@ for ADJ in ${ADJS}
 do
 GWAS_FN="${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb.trans"
 echo "Deleting: ${GWAS_FN}"
+job_id_2=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-gwas-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.gwas")
+job_id_3=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-out-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}-chr*.out")
 job_id_4=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-comb-%A.txt --mem=1G --wrap="rm ${DATA_DIR}/${PHEN}/${ADJ}/${FN}.gwas.comb")
 job_id_5=$(sbatch --output ${DATA_DIR}/${PHEN}/${ADJ}/slurm-delete-interim-trans-%A.txt --mem=1G --wrap="rm ${GWAS_FN}")
 job_id=$(echo $job_id_4 | sed 's/Submitted batch job //')
