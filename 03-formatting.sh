@@ -312,7 +312,6 @@ done
 fi
 
 
-
 for PHEN in ${PHENOTYPE_NAMES}
 do
 for FN in ${COHORTS}
